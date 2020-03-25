@@ -29,6 +29,8 @@ https://www.cnblogs.com/linkenpark/p/11289018.html
 
     A:B你好，我是A。 ==> 
         服务端将消息转发给B,所以服务端会记录用户存根，将消息发给对应的人。
+        socket服务：使用socket 或者iostream或者reader/writer做存根。demo中使用读写器。
+        netty服务：使用channel 做存根。
 
     //客户端:socket连接-->输入消息【主线程】-->发送消息
                       -->开线程接收服务端返回的消息  
@@ -43,14 +45,99 @@ https://www.cnblogs.com/linkenpark/p/11289018.html
         a&b&login  
     //堵塞队列
         https://www.cnblogs.com/tonyspark/p/3722013.html                  
-    离线消息处理：
-        消息要储存 
+    离线、失败消息处理：
+        消息要储存、失败重试
         使用内存、使用redis或者mysql    
 
-3.同步阻塞IO和Nio
+#### mockqq 测试：
+    开启服务、客户端1、客户端2
+    (1)登录:
+        客户端1： a&xx&login
+        客户端2： b&xx&login
+
+    (2)发送消息：
+        客户端1：a&b&hello
+        客户端b：b&a&hello
+
+#### mockqqnetty:
+        (1)服务端    
+            //客户端channel 存根
+            public static final Map<String ,Channel> cMap=new HashMap();
+
+            @Override
+            public void channelRead(ChannelHandlerContext ctx, Object msg) {
+                接收消息
+                登录消息==>记录用户channel
+                其他消息==>转发消息
+            }
+        (2)客户端
+
+            while(true){
+                Scanner sc=new Scanner(System.in);
+                ByteBuf message = Unpooled.buffer(1024);
+                System.out.print("client>>");  			      
+                String nextLine = sc.nextLine(); //stdin.input
+                message.writeBytes(nextLine.getBytes(CharsetUtil.UTF_8));
+                ch.writeAndFlush(message);
+            }
+        
+            @Override
+            public void channelRead(ChannelHandlerContext ctx, Object msg) {
+                输出服务消息【服务器转发其他用户发过来的消息】      
+            }
+### 4.同步阻塞IO和Nio
     <pre>
     netty：https://www.w3cschool.cn/essential_netty_in_action/essential_netty_in_action-y24z289f.html
+    https://www.cnblogs.com/luoxn28/p/11810710.html
+
+    netty 
+    服务端：
+        boot.group(bossGroup, workerGroup)  //指定master组和工作组
+        .channel(NioServerSocketChannel.class)
+        .localAddress(Config.PORT) //设置绑定的端口
+        .childHandler(new ChannelInitializer<SocketChannel>() {
+            @Override
+            protected void initChannel(SocketChannel ch) throws Exception {
+                ch.pipeline().addLast(new EchoServerHandler());//消息处理器，可以有多个
+            }
+        });
+   
+    服务处理器：
+        继承 ChannelInboundHandlerAdapter
+
+        @Override
+        public void channelRead(ChannelHandlerContext ctx, Object msg) {
+           读取msg消息
+           处理【echo 里面是加上时间前缀返回】
+           ctx 再写消息
+        }
+    
+    客户端：
+        b.group(group) //指定工作组
+        .channel(NioSocketChannel.class)
+        .option(ChannelOption.TCP_NODELAY, true)
+        .handler(new ChannelInitializer<SocketChannel>() {
+            @Override
+            public void initChannel(SocketChannel ch) throws Exception {
+                ChannelPipeline p = ch.pipeline();
+                //p.addLast(new LoggingHandler(LogLevel.INFO));
+                p.addLast(new EchoClientHandler());//指定处理器
+            }
+        });
+        ChannelFuture f = b.connect(Config.HOST_ADDRESS, Config.PORT).sync();//连接指定地址服务
+
+    客户端处理器：
+        继承 ChannelInboundHandlerAdapter
+
+        @Override
+        public void channelRead(ChannelHandlerContext ctx, Object msg) {
+           读取msg消息
+           处理【读取stdin作为消息】
+           ctx 再写消息
+        }
     </pre>
+
+
 4.使用场景--rpc
     反射生成代理
 

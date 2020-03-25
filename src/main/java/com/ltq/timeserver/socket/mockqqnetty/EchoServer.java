@@ -1,4 +1,4 @@
-package com.ltq.timeserver.socket.netty;
+package com.ltq.timeserver.socket.mockqqnetty;
 
 import com.ltq.timeserver.socket.Config;
 
