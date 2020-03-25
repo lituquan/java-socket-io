@@ -46,8 +46,9 @@ https://www.cnblogs.com/linkenpark/p/11289018.html
         使用内存、使用redis或者mysql    
 
 3.同步阻塞IO和Nio
+    <pre>
     netty：https://www.w3cschool.cn/essential_netty_in_action/essential_netty_in_action-y24z289f.html
-    
+    </pre>
 4.使用场景--rpc
     反射生成代理
 

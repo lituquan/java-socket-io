@@ -10,7 +10,7 @@ import java.util.concurrent.Executors;
 
 import com.ltq.timeserver.socket.Config;
 
-public class TimeServer {
+public class EchoServer {
     public static void main(String[] args) {
         ExecutorService newCachedThreadPool = Executors.newCachedThreadPool();
         try {
