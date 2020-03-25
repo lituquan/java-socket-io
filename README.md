@@ -40,9 +40,11 @@ https://www.cnblogs.com/linkenpark/p/11289018.html
             所以服务端有2+n个线程。(n为客户端数)        
 
     //消息格式：
-        a&b&login                
+        a&b&login  
+    //堵塞队列
+        https://www.cnblogs.com/tonyspark/p/3722013.html                  
     离线消息处理：
-        消息要储存
+        消息要储存 
         使用内存、使用redis或者mysql    
 
 3.同步阻塞IO和Nio
