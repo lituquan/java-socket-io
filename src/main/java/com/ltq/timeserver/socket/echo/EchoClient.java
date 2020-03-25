@@ -5,7 +5,7 @@ import java.net.Socket;
 
 import com.ltq.timeserver.socket.Config;
 
-public class TimeClient {
+public class EchoClient {
     public static void main(String[] args) {
         try {
 
