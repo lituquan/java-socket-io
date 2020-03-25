@@ -139,6 +139,11 @@ https://www.cnblogs.com/linkenpark/p/11289018.html
 
 
 4.使用场景--rpc
-    反射生成代理
+    反射
+    java 序列化
+    动态代理
 
+    https://www.cnblogs.com/zyl2016/p/9875593.html
+    https://www.cnblogs.com/zyl2016/p/9875593.html
+    
 5.注册中心    
