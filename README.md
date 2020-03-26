@@ -140,10 +140,32 @@ https://www.cnblogs.com/linkenpark/p/11289018.html
 
 4.使用场景--rpc
     反射
-    java 序列化
+    java 序列化、对象流
     动态代理
+    tcp/socket
 
-    https://www.cnblogs.com/zyl2016/p/9875593.html
+    服务端：
+        (1)开端口接收连接
+            RpcServerStater start
+        (2)监听输入流:
+            RpcHandler 线程run:
+              读报文=>接口、方法、参数、参数类型【反序列化】
+        (3)反射Method调用invoke执行远程对象的方法  
+              反射invoke得到result=>写报文【序列化】          
+        (4)写入输出流 
+
+    客户端：
+        (1)连接
+        (2)获取代理接口的对象【动态代理】
+        (3)调用方法,发送请求           
+        (4)接收响应
+            接口、方法、参数、参数类型=>写报文【序列化】
+            读报文=>result对象【反序列化】
+
+    测试：
+        服务端设置端口，【注册】服务接口和远程对象，开启服务。
+        客户端连接，获取接口【代理】对象，执行方法。
+
     https://www.cnblogs.com/zyl2016/p/9875593.html
     
 5.注册中心    
