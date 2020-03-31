@@ -2,7 +2,6 @@ package com.ltq.socket.rpc.test;
 
 public class HelloImpl implements Hello{
 
-    @Override
     public int add(int a, int b) {
         // TODO Auto-generated method stub
         return a+b;

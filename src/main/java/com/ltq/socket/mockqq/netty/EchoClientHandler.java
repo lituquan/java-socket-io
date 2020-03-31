@@ -13,20 +13,7 @@ public class EchoClientHandler extends ChannelInboundHandlerAdapter {
 
     @Override
     public void channelActive(ChannelHandlerContext ctx) {
-    	// final Channel ch=ctx.channel();
-    	// new Thread(){
-    	// 	public void run(){
-    	// 		while(true){
-  		// 		  Scanner sc=new Scanner(System.in);
-  		// 	      ByteBuf message = Unpooled.buffer(1024);
-  		// 	      System.out.print("client>>");  			      
-  		// 	      String nextLine = sc.nextLine(); //stdin.input
-  		// 	      message.writeBytes(nextLine.getBytes(CharsetUtil.UTF_8));
-  		// 	      ch.writeAndFlush(message);
-	  	// 		}
-    			
-    	// 	}
-    	// }.start();
+  
     }
  
     @Override

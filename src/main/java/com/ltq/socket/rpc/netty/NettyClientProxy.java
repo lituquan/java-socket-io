@@ -1,24 +1,28 @@
-package com.ltq.socket.rpc;
+package com.ltq.socket.rpc.netty;
 
 import com.ltq.socket.rpc.code.Request;
 
+import io.netty.buffer.ByteBuf;
+import io.netty.buffer.Unpooled;
+import io.netty.channel.Channel;
+import io.netty.channel.ChannelPromise;
+
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
-import java.net.Socket;
 import java.util.UUID;
 
-public class ClientProxy<T> implements InvocationHandler {
-    private Socket socket;
-        
-    ObjectInputStream in = null;
-    ObjectOutputStream out = null;
 
-    public ClientProxy(String ip, int port) {
+public class NettyClientProxy<T> implements InvocationHandler {
+    private RpcClientHandler ch;
+  
+    public NettyClientProxy(String ip, int port) {
         try {
-            this.socket = new Socket(ip, port);            
+            this.ch = new RpcClientHandler(ip, port);
         } catch (Exception e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
@@ -31,21 +35,30 @@ public class ClientProxy<T> implements InvocationHandler {
         		new Class<?>[]{serviceInterface},
         		this);
     }
-    
+	public byte[] toByteArray (Object obj) {      
+        byte[] bytes = null;      
+        ByteArrayOutputStream bos = new ByteArrayOutputStream();      
+        try {        
+            ObjectOutputStream oos = new ObjectOutputStream(bos);         
+            oos.writeObject(obj);        
+            oos.flush();         
+            bytes = bos.toByteArray ();      
+            oos.close();         
+            bos.close();        
+        } catch (IOException ex) {        
+            ex.printStackTrace();   
+        }      
+        return bytes;    
+    }   
     public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
-
         Request req=new Request();
         req.setMessageId(UUID.randomUUID().toString());
         req.setClassName(method.getDeclaringClass().getName());
         req.setMethodName(method.getName());
         req.setParameters(args);
         req.setTypeParameters(method.getParameterTypes());
-        out=new ObjectOutputStream(socket.getOutputStream());
-        out.writeObject(req);
-        out.flush();
-
-        in=new ObjectInputStream(socket.getInputStream());
-        return in.readObject();
+            
+        return  ch.send(req);
     }
 
 }

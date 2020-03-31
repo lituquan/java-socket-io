@@ -8,6 +8,8 @@ import java.lang.reflect.Proxy;
 import java.net.Socket;
 import java.util.HashMap;
 
+import com.ltq.socket.rpc.code.Request;
+
 public class RpcHandler implements Runnable {
     private Socket socket=null;
     private static final HashMap<String, Class<?>> serviceRegistry = new HashMap();
@@ -28,11 +30,11 @@ public class RpcHandler implements Runnable {
                 ObjectInputStream input = new ObjectInputStream(socket.getInputStream());
                 //转对象
                 //接口,方法,参数
-                String serviceName = input.readUTF();
-                String methodName = input.readUTF();
-                System.out.println (methodName);
-                Class<?>[] parameterTypes = (Class<?>[]) input.readObject();
-                Object[] arguments = (Object[]) input.readObject();
+                Request req= (Request) input.readObject();
+                String serviceName = req.getClassName();
+                String methodName = req.getMethodName();
+                Class<?>[] parameterTypes = (Class<?>[]) req.getTypeParameters();
+                Object[] arguments = (Object[]) req.getParameters();              
                 //代理方法
                 Class serviceClass = serviceRegistry.get(serviceName);
                 if (serviceClass == null) {
@@ -46,7 +48,7 @@ public class RpcHandler implements Runnable {
                 out.writeObject(result);             
             }
         } catch (Exception e) {
-            System.out.println(e);
+        	 e.printStackTrace();
         }
 
     }
