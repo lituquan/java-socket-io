@@ -64,9 +64,8 @@ public class RpcServerHandler extends ChannelInboundHandlerAdapter {
 			Object result = method.invoke(serviceClass.newInstance(), arguments);
 			// 写报文
 	        System.out.println(result);
-			byte[] byteArray = toByteArray(result);        
-			in=Unpooled.buffer(byteArray.length);	
-	        in.writeBytes(byteArray);
+	        in=Unpooled.buffer(4096);	        
+	        in.writeBytes(toByteArray(result));
 	        ctx.writeAndFlush(in);
 		} catch (Exception e) {
 			e.printStackTrace();
