@@ -1,5 +1,8 @@
 package com.ltq.socket.rpc.netty;
 
+import com.ltq.socket.rpc.code.Decoder;
+import com.ltq.socket.rpc.code.Encoder;
+
 import io.netty.bootstrap.ServerBootstrap;
 import io.netty.channel.ChannelFuture;
 import io.netty.channel.ChannelInitializer;
@@ -28,7 +31,10 @@ public class NettyRpcServer {
                 .childHandler(new ChannelInitializer<SocketChannel>() {
                     @Override
                     protected void initChannel(SocketChannel ch) throws Exception {
-                        ch.pipeline().addLast(new RpcServerHandler());
+                        ch.pipeline()
+                        .addLast(new Encoder())
+                        .addLast(new Decoder())
+                        .addLast(new RpcServerHandler());
                     }
                 });
      

@@ -1,20 +1,11 @@
 package com.ltq.socket.rpc.netty;
 
-import com.ltq.socket.rpc.code.Request;
-
-import io.netty.buffer.ByteBuf;
-import io.netty.buffer.Unpooled;
-import io.netty.channel.Channel;
-import io.netty.channel.ChannelPromise;
-
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
 import java.util.UUID;
+
+import com.ltq.socket.rpc.code.Request;
 
 
 public class NettyClientProxy<T> implements InvocationHandler {
@@ -35,21 +26,6 @@ public class NettyClientProxy<T> implements InvocationHandler {
         		new Class<?>[]{serviceInterface},
         		this);
     }
-	public byte[] toByteArray (Object obj) {      
-        byte[] bytes = null;      
-        ByteArrayOutputStream bos = new ByteArrayOutputStream();      
-        try {        
-            ObjectOutputStream oos = new ObjectOutputStream(bos);         
-            oos.writeObject(obj);        
-            oos.flush();         
-            bytes = bos.toByteArray ();      
-            oos.close();         
-            bos.close();        
-        } catch (IOException ex) {        
-            ex.printStackTrace();   
-        }      
-        return bytes;    
-    }   
     public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
         Request req=new Request();
         req.setMessageId(UUID.randomUUID().toString());

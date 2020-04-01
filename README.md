@@ -169,5 +169,13 @@ https://www.cnblogs.com/linkenpark/p/11289018.html
     https://www.cnblogs.com/zyl2016/p/9875593.html
    
   netty rpc 
-  https://gitee.com/huangyong/rpc 
+    https://gitee.com/huangyong/rpc 
+    https://www.cnblogs.com/zeroone/p/8490930.html
+
+    客户端->proxy.invoke->客户端req 编码 ->传输->服务端req解码->处理请求
+    ->服务端response 编码->传输->客户端response解码->结果返回
+
+    编码解码要用到序列化和反序列化
+    传输报文【字节长度,字节】
+    
 5.注册中心    

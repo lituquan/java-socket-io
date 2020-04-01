@@ -27,23 +27,13 @@ public class RpcHandler implements Runnable {
             //通过while循环不断读取信息，
             while (true) {
                 //读报文
+                //转对象 -- 使用java默认反序列化
                 ObjectInputStream input = new ObjectInputStream(socket.getInputStream());
-                //转对象
-                //接口,方法,参数
                 Request req= (Request) input.readObject();
-                String serviceName = req.getClassName();
-                String methodName = req.getMethodName();
-                Class<?>[] parameterTypes = (Class<?>[]) req.getTypeParameters();
-                Object[] arguments = (Object[]) req.getParameters();              
-                //代理方法
-                Class serviceClass = serviceRegistry.get(serviceName);
-                if (serviceClass == null) {
-                    throw new ClassNotFoundException(serviceName + " not found");
-                }
-                Method method = serviceClass.getMethod(methodName, parameterTypes);
-                Object result = method.invoke(serviceClass.newInstance(), arguments);               
-                //转报文
-                //写报文
+                //反射获取结果
+                Object result=handle(req);            
+                //转报文 -- 使用java默认序列化
+                //写报文             
                 ObjectOutputStream out = new ObjectOutputStream(socket.getOutputStream());
                 out.writeObject(result);             
             }
@@ -51,6 +41,22 @@ public class RpcHandler implements Runnable {
         	 e.printStackTrace();
         }
 
+    }
+
+    private Object handle(Request req) throws Exception {
+        //接口,方法+参数类型,参数
+        String serviceName = req.getClassName();
+        String methodName = req.getMethodName();
+        Class<?>[] parameterTypes = (Class<?>[]) req.getTypeParameters();
+        Object[] arguments = (Object[]) req.getParameters();              
+        //代理方法
+        Class serviceClass = serviceRegistry.get(serviceName);
+        if (serviceClass == null) {
+            throw new ClassNotFoundException(serviceName + " not found");
+        }
+        Method method = serviceClass.getMethod(methodName, parameterTypes);
+        Object result = method.invoke(serviceClass.newInstance(), arguments);   
+        return result;
     }
 }
 
