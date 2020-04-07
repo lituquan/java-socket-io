@@ -178,4 +178,14 @@ https://www.cnblogs.com/linkenpark/p/11289018.html
     编码解码要用到序列化和反序列化
     传输报文【字节长度,字节】
     
-5.注册中心    
+5.注册中心   
+    (1)服务注册
+        当服务掉线了,要通知切换地址【服务上下线】
+    (2)服务发现
+
+
+zk:(1)配置中心、命名服务 (2)服务上下线 (3)软负载均衡 (4)分布式锁
+    https://www.jianshu.com/p/74e4d91a1886
+
+redis:(1)缓存 (2)排行榜
+    https://www.cnblogs.com/shiqi17/p/9581752.html    
