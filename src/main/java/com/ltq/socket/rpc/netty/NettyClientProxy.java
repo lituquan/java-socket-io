@@ -19,6 +19,16 @@ public class NettyClientProxy<T> implements InvocationHandler {
             e.printStackTrace();
         }
     }
+    public NettyClientProxy(String addr) {
+        try {
+        	String[] partString=addr.split(":");
+            this.ch = new RpcClientHandler(partString[0], Integer.valueOf(partString[1]));
+        } catch (Exception e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+    }
+    
     //反射的原理：生成继承proxy的子类字节码,传递一个InvocationHandler对象
     //serviceInterface 调用方法时,
     public T getClientIntance(Class<T> serviceInterface){    
