@@ -11,6 +11,9 @@ import com.ltq.socket.rpc.netty.RpcServerHandler;
  *  提供注册中心地址 zkAddress , 
  *  标记要发布的对象@Service,
  *  提供部署端口
+ *  
+ * 服务下线：
+ * 	故障移除
  */
 
 //客户端request==>报文==>socket[i,o]==>报文==>服务端请求方法==>result==>报文
